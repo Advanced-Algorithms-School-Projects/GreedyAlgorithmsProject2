@@ -17,12 +17,9 @@ using namespace std;
 #include "d_matrix.h"
 #include "knapsack.h"
 
-void exhaustiveKnapsack(knapsack &k, int t); //finds the best knapsack
-void RKT(knapsack &k, knapsack &bestSol, int start, int numUnSelect, int unSelIndex, clock_t startT, int t);
-void checkKnapsack(knapsack &k, knapsack &bestSol);
-void softReset(knapsack &k, int currPos, int newPos);
-void hardReset(knapsack &k, int numUnSelect);
-void moveUnSelection(knapsack &k, int oldPos, int newPos);
+
+void greedyKnapsack(knapsack &k, int t);
+void orderKnapsack(knapsack &k, vector<int> &items, clock_t startT, int t);
 
 int main()
 {
@@ -33,7 +30,7 @@ int main()
 	// Read the name of the graph from the keyboard or
 	// hard code it here for testing.
 
-	fileName = "knapsack1024.input";
+	fileName = "knapsack48.input";
 
 	//cout << "Enter filename" << endl;
 	//cin >> fileName;
@@ -50,8 +47,8 @@ int main()
 		cout << "Reading knapsack instance" << endl;
 		knapsack k(fin);
 
-		exhaustiveKnapsack(k, 120);
-		string output = "/Users/Cassie/source/knapsack1024.output";
+		greedyKnapsack(k, 600);
+		string output = "/Users/Cassie/source/knapsack48.output";
 
 		//cout << endl << "Best solution" << endl;
 		k.printSolution(output);
@@ -69,98 +66,59 @@ int main()
 	system("pause");
 }
 
-//Function takes a knapsack input and a time input to exhaustively determine the best combination
-//of items that maximizes the knapsack value while remaining under the cost limit.
-//Exits function if time taken exceeds t.
-void exhaustiveKnapsack(knapsack &k, int t) {
+
+void greedyKnapsack(knapsack &k, int t) {
 	clock_t startTime = clock();
-	knapsack bestSol = knapsack(k);
-	int numObjects = k.getNumObjects();
 
-	//Checks if all selected knapsack is best
-	checkKnapsack(k, bestSol);
-
-	//Loops through changing number of unselected items
-	for (int j = 1; j < numObjects; j++) {
-		int start = 0;
-		hardReset(k, j);
-
-		RKT(k, bestSol, start, j, 0, startTime, t);
+	vector<int> items;
+	items.resize(k.getNumObjects());
+	for (int i = 0; i < k.getNumObjects(); i++) {
+		items[i] = i;
 	}
 
-	//Checks if all unselected is best
-	hardReset(k, 8);
-	checkKnapsack(k, bestSol);
+	//Order knapsack items by decreasing value 
+	orderKnapsack(k, items, startTime, t);
 
-	//Sets knapsack to best solution
-	k = knapsack(bestSol);
-}
-
-//Recursively tests every knapsack combination and tracks the combination with the highest value.
-//Exits the function if the time taken exceeds t.
-void RKT(knapsack &k, knapsack &bestSol, int start, int numUnSelect, int unSelIndex, clock_t startT, int t) {
-	//Exit function if time is exceeded
-	if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
-		return;
-	}
-
-	//Calculates end point of current unselected item
-	int end = k.getNumObjects() + unSelIndex - numUnSelect;
-
-	for (int i = start; i <= end; i++) {
-		checkKnapsack(k, bestSol);
-		if (i == end) {
-			//Resets current unselected item for the next iteration
-			softReset(k, i, start + 1);
+	//Loop through items
+	//Choose first/next item that does not have a cost more than the cost limit
+	for (int i = 0; i < k.getNumObjects(); i++) {
+		if ((k.getCost() + k.getCost(items[i])) <= k.getCostLimit()) {
+			k.select(items[i]);
+		}
+		if (((float)(clock() - startTime) / CLOCKS_PER_SEC) >= t) {
 			return;
 		}
-		if ((i + 1) < k.getNumObjects()) {
-			if (!k.isSelected(i + 1)) {
-				//Moves the next unselected item
-				RKT(k, bestSol, i + 1, numUnSelect, unSelIndex + 1, startT, t);
-				//Exit function if time is exceeded
-				if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
-					return;
-				}
-			}
-			if (k.isSelected(i + 1)) {
-				//Moves the current unselected item
-				moveUnSelection(k, i, i + 1);
+	}
+
+	//cout << "Total value: " << k.getValue() << ", Total cost: " << k.getCost() << endl;
+	//for (int m = 0; m < k.getNumObjects(); m++) {
+	//	cout << "Item " << m << " selected: " << k.isSelected(m) << endl;
+	//}
+
+}
+
+void orderKnapsack(knapsack &k, vector<int> &items, clock_t startT, int t) {
+	int temp, j;
+
+	for (int i = 1; i < k.getNumObjects(); i++) {
+		temp = items[i];
+		j = i - 1;
+
+		while (j >= 0 && k.getRatio(items[j]) < k.getRatio(temp)) {
+			items[j + 1] = items[j];
+			j = j - 1;
+
+			if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
+				return;
 			}
 		}
+		items[j + 1] = temp;
+		if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
+			return;
+		}
 	}
-}
 
-//Checks if the given knapsack is valid and has a higher values than the current best knapsack
-void checkKnapsack(knapsack &k, knapsack &bestSol) {
-	if ((k.getCost() <= k.getCostLimit()) && (k.getValue() > bestSol.getValue())) {
-		bestSol = knapsack(k);
-	}
-}
-
-//Resets the given unselected item and all proceeding unselected item to the next start
-//position for the next iteration
-void softReset(knapsack &k, int currPos, int newPos) {
-	int j = 0;
-	for (int i = currPos; i < k.getNumObjects(); i++) {
-		moveUnSelection(k, i, newPos + j);
-		j++;
-	}
-	return;
-}
-
-//Resets the given number of unselected items to the beginning of the knapsack
-void hardReset(knapsack &k, int numUnSelect) {
-	for (int i = 0; i < numUnSelect; i++) {
-		k.unSelect(i);
-	}
-	for (int i = numUnSelect; i < k.getNumObjects(); i++) {
-		k.select(i);
-	}
-}
-
-//Moves an unselected item to a new position
-void moveUnSelection(knapsack &k, int oldPos, int newPos) {
-	k.select(oldPos);
-	k.unSelect(newPos);
+	//for (int m = 0; m < k.getNumObjects(); m++) {
+	//	cout << "Item " << items[m] << ", Ratio = " << k.getRatio(items[m]) << endl;
+	//}
 }

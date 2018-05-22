@@ -8,6 +8,7 @@ public:
 	knapsack(const knapsack &);
 	int getCost(int) const;
 	int getValue(int) const;
+	double getRatio(int) const;
 	int getCost() const;
 	int getValue() const;
 	int getNumObjects() const;
@@ -23,6 +24,7 @@ private:
 	int costLimit;
 	vector<int> value;
 	vector<int> cost;
+	vector<double> ratio;
 	vector<bool> selected;
 	int totalValue;
 	int totalCost;
@@ -41,6 +43,7 @@ knapsack::knapsack(ifstream &fin)
 
 	value.resize(n);
 	cost.resize(n);
+	ratio.resize(n);
 	selected.resize(n);
 
 	for (int i = 0; i < n; i++)
@@ -48,6 +51,7 @@ knapsack::knapsack(ifstream &fin)
 		fin >> j >> v >> c;
 		value[j] = v;
 		cost[j] = c;
+		ratio[j] = (double) v / (double) c;
 		unSelect(j);
 	}
 
@@ -73,6 +77,7 @@ knapsack::knapsack(const knapsack &k)
 	{
 		value[i] = k.getValue(i);
 		cost[i] = k.getCost(i);
+		ratio[i] = k.getRatio(i);
 		if (k.isSelected(i))
 			select(i);
 		else
@@ -110,6 +115,15 @@ int knapsack::getCost(int i) const
 		throw rangeError("Bad value in knapsack::getCost");
 
 	return cost[i];
+}
+
+double knapsack::getRatio(int i) const
+// Return the value to cost ratio of the ith object.
+{
+	if (i < 0 || i >= getNumObjects())
+		throw rangeError("Bad value in knapsack::getRatio");
+
+	return ratio[i];
 }
 
 int knapsack::getCost() const

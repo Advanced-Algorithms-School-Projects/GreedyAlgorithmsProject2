@@ -32,9 +32,6 @@
     <ClCompile Include="p2a.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="p2b.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color192-8.input">
