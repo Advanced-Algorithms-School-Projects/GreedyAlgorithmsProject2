@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\boost_1_66_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,6 +116,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="d_except.h" />
+    <ClInclude Include="d_matrix.h" />
+    <ClInclude Include="d_random.h" />
+    <ClInclude Include="knapsack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="p2a.cpp" />
+    <ClCompile Include="p2b.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="color.format" />
+    <None Include="color12-3.input" />
+    <None Include="color12-4.input" />
+    <None Include="color192-6.input" />
+    <None Include="color192-7.input" />
+    <None Include="color192-8.input" />
+    <None Include="color24-4.input" />
+    <None Include="color24-5.input" />
+    <None Include="color48-5.input" />
+    <None Include="color48-6.input" />
+    <None Include="color96-6.input" />
+    <None Include="color96-7.input" />
+    <None Include="knapsack.format" />
+    <None Include="knapsack1024.input" />
+    <None Include="knapsack12.input" />
+    <None Include="knapsack128.input" />
+    <None Include="knapsack16.input" />
+    <None Include="knapsack20.input" />
+    <None Include="knapsack256.input" />
+    <None Include="knapsack28.input" />
+    <None Include="knapsack32.input" />
+    <None Include="knapsack48.input" />
+    <None Include="knapsack512.input" />
+    <None Include="knapsack64.input" />
+    <None Include="knapsack8.input" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
