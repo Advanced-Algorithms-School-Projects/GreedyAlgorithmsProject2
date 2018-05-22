@@ -29,7 +29,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="p2a.cpp">
+    <ClCompile Include="p2b.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

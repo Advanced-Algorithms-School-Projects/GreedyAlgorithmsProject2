@@ -122,7 +122,7 @@
     <ClInclude Include="knapsack.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="p2a.cpp" />
+    <ClCompile Include="p2b.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.format" />
