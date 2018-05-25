@@ -22,13 +22,10 @@ int const NONE = -1;  // Used to represent a node that does not exist
 struct VertexProperties;
 struct EdgeProperties;
 
-typedef adjacency_list<vecS, vecS, bidirectionalS, VertexProperties, EdgeProperties> Graph;
+typedef adjacency_list<vecS, vecS, undirectedS, VertexProperties, EdgeProperties> Graph;
 
-int greedyColoring(Graph &g, int numColors, int t);
-void placeColor(Graph &g, Graph::vertex_iterator &node, int &numConflicts, int numColors);
-//int exhaustiveColoring(Graph &g, int numColors, int t);
-//void RGT(Graph &g, Graph &bestG, int &bestGConflicts, int numColors, Graph::vertex_iterator start, clock_t startT, int t);
-//void checkConflicts(Graph &g, Graph &bestG, int &bestGConflicts);
+int greedyColoring(Graph &g, int numColors);
+void placeColor(Graph &g, Graph::vertex_iterator node, int &numConflicts, int numColors);
 void printSolution(Graph &g, int numConflicts, string filePath_output);
 
 struct VertexProperties
@@ -88,8 +85,8 @@ int main()
 
 	// Read the name of the graph from the keyboard or
 	// hard code it here for testing.
-	string inputName = "12-3";
-	fileName = "color" + inputName + ".input"; 
+
+	fileName = "color192-8.input";
 
 	//   cout << "Enter filename" << endl;
 	//   cin >> fileName;
@@ -114,9 +111,8 @@ int main()
 		cout << "Num edges: " << num_edges(g) << endl;
 		cout << endl;
 
-		numConflicts = greedyColoring(g, numColors, 600);
-//		numConflicts = exhaustiveColoring(g, numColors, 600);
-		string output = "/Users/patri/Desktop/Proj2-Git/GreedyAlgorithmsProject2/Output Files/color" + inputName + ".output";
+		numConflicts = greedyColoring(g, numColors);
+		string output = "/Users/Cassie/source/color192-8.output";
 		printSolution(g, numConflicts, output);
 		system("pause");
 
@@ -131,8 +127,8 @@ int main()
 	}
 }
 
-int greedyColoring(Graph &g, int numColors, int t) {
-	clock_t startTime = clock();
+
+int greedyColoring(Graph &g, int numColors) {
 	int numConflicts = 0;
 	//gets start and end vertex iterators (which allow you to access the vertex)
 	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
@@ -140,53 +136,20 @@ int greedyColoring(Graph &g, int numColors, int t) {
 	Graph::vertex_iterator firstNode = vItrRange.first;
 	Graph::vertex_iterator lastNode = vItrRange.second;
 
-	//set all colors to zero
+	//assign all vertex colors to 0, meaning lack of color
 	for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
 		g[*vItr].color = 0;
 	}
 
-	//assign all vertex colors to 0, meaning lack of color
+	//assign vertex colors using the greedy algorithm
 	for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
 		placeColor(g, vItr, numConflicts, numColors);
-		
-		int counter = 0;
-		cout << endl << endl << endl << "New Graph:" << endl;
-		for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
-			cout << "node number: " << counter << "    color = " << g[*vItr].color << endl;
-			counter++;
-		}
 	}
 
 	return numConflicts;
 }
 
-//Prints the best graph coloring calculated
-void printSolution(Graph &g, int numConflicts, string filePath_output) {
-	ofstream myfile;
-	myfile.open(filePath_output.c_str());
-
-	myfile << "Total Conflicts: " << numConflicts << endl;
-
-	for (int counter = 0; counter < num_vertices(g); counter++) {
-		
-	}
-
-	//gets start and end vertex iterators (which allow you to access the vertex)
-	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
-	Graph::vertex_iterator firstNode = vItrRange.first;
-	Graph::vertex_iterator lastNode = vItrRange.second;
-
-	int counter = 0;
-	//set all colors to zero
-	for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
-		myfile << counter << ": " << g[*vItr].color << endl;
-		counter++;
-	}
-
-	myfile.close();
-}
-
-void placeColor(Graph &g, Graph::vertex_iterator &node, int &numConflicts, const int numColors) {
+void placeColor(Graph &g, Graph::vertex_iterator node, int &numConflicts, const int numColors) {
 	vector<int> conflicts;
 	conflicts.resize(numColors + 1,0);
 
@@ -194,6 +157,7 @@ void placeColor(Graph &g, Graph::vertex_iterator &node, int &numConflicts, const
 	// list of nodes adjacent to node v
 	pair<Graph::adjacency_iterator, Graph::adjacency_iterator> adjRange = adjacent_vertices(*node, g);
 
+	// Adjacent node list is incorrect for our purposes
 	// Loop over adjacent nodes in the graph
 	for (Graph::adjacency_iterator Itr = adjRange.first; Itr != adjRange.second; ++Itr) { //for some reason g[*Itr].color is always 0
 		cout << endl << "Updating Conflicts Vector: current[" << *Itr << "]=" << conflicts[g[*Itr].color] << " color=" << g[*Itr].color << endl;
@@ -231,4 +195,18 @@ void placeColor(Graph &g, Graph::vertex_iterator &node, int &numConflicts, const
 	}
 
 	return;
+}
+
+//Prints the best graph coloring calculated
+void printSolution(Graph &g, int numConflicts, string filePath_output) {
+	ofstream myfile;
+	myfile.open(filePath_output.c_str());
+
+	myfile << "Total Conflicts: " << numConflicts << endl;
+
+	for (int counter = 0; counter < num_vertices(g); counter++) {
+		myfile << counter << ": " << g[counter].color << endl;
+	}
+
+	myfile.close();
 }
