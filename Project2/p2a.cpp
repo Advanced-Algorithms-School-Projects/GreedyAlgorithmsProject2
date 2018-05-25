@@ -30,7 +30,9 @@ int main()
 	// Read the name of the graph from the keyboard or
 	// hard code it here for testing.
 
-	fileName = "knapsack48.input";
+	string inputName = "knapsack1024";
+	fileName = inputName + ".input";
+	cout << "file name is " << fileName << endl;
 
 	//cout << "Enter filename" << endl;
 	//cin >> fileName;
@@ -48,7 +50,9 @@ int main()
 		knapsack k(fin);
 
 		greedyKnapsack(k, 600);
-		string output = "/Users/Cassie/source/knapsack48.output";
+		string output = "/Users/patri/Desktop/Proj2-Git/GreedyAlgorithmsProject2/Output Files/" + inputName + ".output";
+		cout << "output name: " << output << endl;
+
 
 		//cout << endl << "Best solution" << endl;
 		k.printSolution(output);
