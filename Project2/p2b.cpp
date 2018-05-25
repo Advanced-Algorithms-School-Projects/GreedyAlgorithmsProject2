@@ -135,12 +135,12 @@ int greedyColoring(Graph &g, int numColors) {
 	Graph::vertex_iterator firstNode = vItrRange.first;
 	Graph::vertex_iterator lastNode = vItrRange.second;
 
-	//set all colors to zero
+	//assign all vertex colors to 0, meaning lack of color
 	for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
 		g[*vItr].color = 0;
 	}
 
-	//assign all vertex colors to 0, meaning lack of color
+	//assign vertex colors using the greedy algorithm
 	for (Graph::vertex_iterator vItr = firstNode; vItr != lastNode; ++vItr) {
 		placeColor(g, vItr, numConflicts, numColors);
 	}

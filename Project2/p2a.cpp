@@ -18,8 +18,8 @@ using namespace std;
 #include "knapsack.h"
 
 
-void greedyKnapsack(knapsack &k, int t);
-void orderKnapsack(knapsack &k, vector<int> &items, clock_t startT, int t);
+void greedyKnapsack(knapsack &k);
+void orderKnapsack(knapsack &k, vector<int> &items);
 
 int main()
 {
@@ -49,7 +49,7 @@ int main()
 		cout << "Reading knapsack instance" << endl;
 		knapsack k(fin);
 
-		greedyKnapsack(k, 600);
+		greedyKnapsack(k);
 		string output = "/Users/patri/Desktop/Proj2-Git/GreedyAlgorithmsProject2/Output Files/" + inputName + ".output";
 		cout << "output name: " << output << endl;
 
@@ -71,9 +71,7 @@ int main()
 }
 
 
-void greedyKnapsack(knapsack &k, int t) {
-	clock_t startTime = clock();
-
+void greedyKnapsack(knapsack &k) {
 	vector<int> items;
 	items.resize(k.getNumObjects());
 	for (int i = 0; i < k.getNumObjects(); i++) {
@@ -89,19 +87,10 @@ void greedyKnapsack(knapsack &k, int t) {
 		if ((k.getCost() + k.getCost(items[i])) <= k.getCostLimit()) {
 			k.select(items[i]);
 		}
-		if (((float)(clock() - startTime) / CLOCKS_PER_SEC) >= t) {
-			return;
-		}
 	}
-
-	//cout << "Total value: " << k.getValue() << ", Total cost: " << k.getCost() << endl;
-	//for (int m = 0; m < k.getNumObjects(); m++) {
-	//	cout << "Item " << m << " selected: " << k.isSelected(m) << endl;
-	//}
-
 }
 
-void orderKnapsack(knapsack &k, vector<int> &items, clock_t startT, int t) {
+void orderKnapsack(knapsack &k, vector<int> &items) {
 	int temp, j;
 
 	for (int i = 1; i < k.getNumObjects(); i++) {
@@ -111,18 +100,7 @@ void orderKnapsack(knapsack &k, vector<int> &items, clock_t startT, int t) {
 		while (j >= 0 && k.getRatio(items[j]) < k.getRatio(temp)) {
 			items[j + 1] = items[j];
 			j = j - 1;
-
-			if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
-				return;
-			}
 		}
 		items[j + 1] = temp;
-		if (((float)(clock() - startT) / CLOCKS_PER_SEC) >= t) {
-			return;
-		}
 	}
-
-	//for (int m = 0; m < k.getNumObjects(); m++) {
-	//	cout << "Item " << items[m] << ", Ratio = " << k.getRatio(items[m]) << endl;
-	//}
 }

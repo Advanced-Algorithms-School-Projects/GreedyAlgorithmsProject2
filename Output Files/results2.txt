@@ -1,0 +1,15 @@
+Project 2 Results
+	Patrick Hanbury & Cassandra Smith
+	May 25th, 2018
+
+The goal of this project was to solve the knapsack and graph coloring problems by using greedy 
+algorithms. Greedy algorithms always make whatever decision seems best at any time and they 
+never backtrack or undo decisions. For the knapsack problem, we chose to order the items by 
+decreasing ratio of value to cost and then loop through those items choosing the next valid
+item to maximize the value while staying under the cost limit. This algorithm has a worst-case 
+complexity of n^2 because we chose to use insertion sort to order the items. For the graph 
+coloring problem, we decided to loop through every node and then loop through that node's 
+adjacent nodes choosing to assign the color that produces the least number of conflicts. This 
+algorithm also has a complexity of n^2. Compared to the exhaustive algorithms from the previous
+project which had a complexity of 2^n, these algorithms ran much faster and always found a 
+solution even if it wasn't the best one.
